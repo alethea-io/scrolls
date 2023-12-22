@@ -1,5 +1,6 @@
 use pallas::{ledger::traverse::wellknown::GenesisValues, network::miniprotocols::Point};
 use serde::Deserialize;
+pub use utxorpc::proto::cardano::v1::Block;
 
 pub mod cursor;
 pub mod errors;
@@ -14,6 +15,7 @@ use self::model::{BlockContext, CRDTCommand};
 pub enum Record {
     RawBlockPayload(Vec<u8>),
     EnrichedBlockPayload(Vec<u8>, BlockContext),
+    UtxoRPCBlockPayload(Block),
     CRDTCommand(Vec<CRDTCommand>),
 }
 

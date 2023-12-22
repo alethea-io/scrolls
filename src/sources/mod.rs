@@ -5,10 +5,12 @@ use crate::framework::{errors::Error, *};
 
 pub mod n2c;
 pub mod n2n;
+pub mod utxorpc;
 
 pub enum Bootstrapper {
     N2N(n2n::Stage),
     N2C(n2c::Stage),
+    UtxoRPC(utxorpc::Stage),
 }
 
 impl StageBootstrapper for Bootstrapper {
@@ -16,6 +18,7 @@ impl StageBootstrapper for Bootstrapper {
         match self {
             Bootstrapper::N2N(p) => p.output.connect(adapter),
             Bootstrapper::N2C(p) => p.output.connect(adapter),
+            Bootstrapper::UtxoRPC(p) => p.output.connect(adapter),
         }
     }
 
@@ -27,6 +30,7 @@ impl StageBootstrapper for Bootstrapper {
         match self {
             Bootstrapper::N2N(s) => gasket::runtime::spawn_stage(s, policy),
             Bootstrapper::N2C(s) => gasket::runtime::spawn_stage(s, policy),
+            Bootstrapper::UtxoRPC(s) => gasket::runtime::spawn_stage(s, policy),
         }
     }
 }
@@ -35,9 +39,9 @@ impl StageBootstrapper for Bootstrapper {
 #[serde(tag = "type")]
 pub enum Config {
     N2N(n2n::Config),
-
     #[cfg(target_family = "unix")]
     N2C(n2c::Config),
+    UtxoRPC(utxorpc::Config),
 }
 
 impl Config {
@@ -45,6 +49,7 @@ impl Config {
         match self {
             Config::N2N(c) => Ok(Bootstrapper::N2N(c.bootstrapper(ctx)?)),
             Config::N2C(c) => Ok(Bootstrapper::N2C(c.bootstrapper(ctx)?)),
+            Config::UtxoRPC(c) => Ok(Bootstrapper::UtxoRPC(c.bootstrapper(ctx)?)),
         }
     }
 }

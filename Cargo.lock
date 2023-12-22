@@ -4937,6 +4937,7 @@ dependencies = [
  "sled",
  "thiserror",
  "tokio",
+ "tonic",
  "tracing",
  "tracing-subscriber",
  "utxorpc",
